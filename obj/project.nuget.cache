@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4+OAMh+MZUoVD2vDIJLq6GpXc0hJei4VhldVrK1A0DEnb7+dWR2fFh+lkpgep/xtA6K7tlTnKtBwftgIWvKLKA==",
+  "dgSpecHash": "jONjxu15/lWUSmWi9DoMcM6ibkFvO598HzNyeSG51QWoUips5rIU11W8zy9pTwuW5Pu9yntuzKybXoBY8MVlWw==",
   "success": true,
-  "projectFilePath": "C:\\dev\\MyRepos\\BALTA.IO_FundamentosASPNET6\\BlogAPI\\BlogAPI.csproj",
+  "projectFilePath": "C:\\dev\\MyRepos\\BALTA.IO_Web_ASPNET6\\BlogAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
