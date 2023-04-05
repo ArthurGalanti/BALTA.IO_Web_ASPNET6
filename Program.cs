@@ -28,12 +28,12 @@ app.UseResponseCompression();
 app.UseStaticFiles();
 app.MapControllers();
 app.UseCors();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 if (app.Environment.IsDevelopment())
 {
     Console.WriteLine("Estou no ambiente de desenvolvimento!");
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
 
 app.Run();

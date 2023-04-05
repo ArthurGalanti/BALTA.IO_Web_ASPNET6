@@ -1,6 +1,4 @@
-﻿using BlogAPI.Attrributes;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.Controllers;
 
