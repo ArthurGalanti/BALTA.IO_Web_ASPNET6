@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
+using Azure.Storage.Blobs;
 using BlogAPI.Data;
 using BlogAPI.Extensions;
 using BlogAPI.Models;
@@ -99,16 +101,18 @@ public class AccountController : ControllerBase
     [HttpPost("v1/accounts/upload-image")]
     public async Task<IActionResult> UploadImage(
         [FromBody] UploadImageViewModel model,
+        [FromBody] string container,
         [FromServices] BlogDataContext context)
     {
         var fileName = $"{Guid.NewGuid().ToString()}.jpg";
         var data = new Regex(@"^data:image\/[a-z]+;base64,")
             .Replace(model.Base64Image, "");
         var bytes = Convert.FromBase64String(data);
-
+        var blobClient = new BlobClient(Configuration.AzureStorageConnectionString, container, fileName);
         try
         {
-            await System.IO.File.WriteAllBytesAsync($"wwwroot/images/{fileName}", bytes);
+            using var stream = new MemoryStream(bytes);
+            await blobClient.UploadAsync(stream);
         }
         catch
         {
@@ -121,7 +125,7 @@ public class AccountController : ControllerBase
 
         if (user == null)
             return NotFound(new ResultViewModel<User>("Usuário não encontrado"));
-        user.Image = $"https://localhost:0000/images/{fileName}";
+        user.Image = blobClient.Uri.AbsoluteUri;
         try
         {
             context.Users.Update(user);

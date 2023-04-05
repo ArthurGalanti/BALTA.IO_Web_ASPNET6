@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -46,6 +48,7 @@ void LoadConfiguration(WebApplication app)
     var smtp = new Configuration.SmtpConfiguration();
     app.Configuration.GetSection("Smtp").Bind(smtp);
     Configuration.Smtp = smtp;
+    Configuration.AzureStorageConnectionString = app.Configuration.GetValue<string>("AzureStorageConnectionString");
 }
 
 void ConfigureAuthentication(WebApplicationBuilder builder)
@@ -103,3 +106,4 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddCors(policeBuilder =>
         policeBuilder.AddDefaultPolicy(policy => policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
 }
+public record Upload(string Image);
