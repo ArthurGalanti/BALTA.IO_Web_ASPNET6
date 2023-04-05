@@ -100,8 +100,7 @@ public class AccountController : ControllerBase
     [Authorize]
     [HttpPost("v1/accounts/upload-image")]
     public async Task<IActionResult> UploadImage(
-        [FromBody] UploadImageViewModel model,
-        [FromBody] string container,
+        [FromBody] UploadImageViewModel model, string container,
         [FromServices] BlogDataContext context)
     {
         var fileName = $"{Guid.NewGuid().ToString()}.jpg";
