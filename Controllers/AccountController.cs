@@ -86,8 +86,6 @@ public class AccountController : ControllerBase
         {
             return StatusCode(500, new ResultViewModel<string>($"05X08 - Falha interna no servidor {ex}"));
         }
-
-
     }
 
     [Authorize]
@@ -128,6 +126,6 @@ public class AccountController : ControllerBase
             return StatusCode(500, new ResultViewModel<string>("05X04 - Falha interna"));
         }
 
-        return Ok(new ResultViewModel<string>($"Imagem alterada com sucesso! {User.Identity.Name}", null));
+        return Ok(new ResultViewModel<string>($"Imagem alterada com sucesso!", null));
     }
 }

@@ -98,6 +98,5 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddTransient<EmailService>();
     builder.Services.AddCors(policeBuilder =>
         policeBuilder.AddDefaultPolicy(policy => policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
-    builder.WebHost.UseUrls("http://localhost:1614", "http://odin:1614", "http://192.168.15.108:1614");
-    
+    // builder.WebHost.UseUrls("http://localhost:1614", "http://odin:1614", "http://192.168.15.108:1614");
 }
