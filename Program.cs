@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.RegularExpressions;
-using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -23,7 +21,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 LoadConfiguration(app);
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseResponseCompression();
@@ -32,11 +30,6 @@ app.MapControllers();
 app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-if (app.Environment.IsDevelopment())
-{
-    Console.WriteLine("Estou no ambiente de desenvolvimento!");
-}
 
 app.Run();
 
@@ -53,7 +46,7 @@ void LoadConfiguration(WebApplication app)
 
 void ConfigureAuthentication(WebApplicationBuilder builder)
 {
-    var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+    var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JwtKey"));
     builder.Services.AddAuthentication(x =>
     {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -105,5 +98,6 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddTransient<EmailService>();
     builder.Services.AddCors(policeBuilder =>
         policeBuilder.AddDefaultPolicy(policy => policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
+    builder.WebHost.UseUrls("http://localhost:1614", "http://odin:1614", "http://192.168.15.108:1614");
+    
 }
-public record Upload(string Image);

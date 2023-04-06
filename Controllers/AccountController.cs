@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Azure.Storage.Blobs;
 using BlogAPI.Data;
 using BlogAPI.Extensions;
@@ -30,11 +29,9 @@ public class AccountController : ControllerBase
         {
             Name = model.Name,
             Email = model.Email,
-            Slug = model.Email.Replace("@", "-").Replace(".", "-")
+            Slug = model.Email.Replace("@", "-").Replace(".", "-"),
+            PasswordHash = PasswordHasher.Hash(model.Password)
         };
-        var password = PasswordGenerator.Generate(25);
-        user.PasswordHash = PasswordHasher.Hash(password);
-
         try
         {
             await context.Users.AddAsync(user);
@@ -44,13 +41,9 @@ public class AccountController : ControllerBase
                 user.Name,
                 user.Email,
                 "Bem vindo ao blog!",
-                body: $"{user.Name}, sua senha é <strong>{password}</strong>");
+                body: $"{user.Name}, sua senha é <strong>{model.Password}</strong>");
 
-            return Ok(new ResultViewModel<dynamic>(new
-            {
-                user = user.Email,
-                password
-            }));
+            return Ok(new ResultViewModel<dynamic>($"E-mail {user.Email} cadastrado com sucesso!"));
         }
         catch (DbUpdateException)
         {
@@ -100,14 +93,14 @@ public class AccountController : ControllerBase
     [Authorize]
     [HttpPost("v1/accounts/upload-image")]
     public async Task<IActionResult> UploadImage(
-        [FromBody] UploadImageViewModel model, string container,
+        [FromBody] UploadImageViewModel model,
         [FromServices] BlogDataContext context)
     {
         var fileName = $"{Guid.NewGuid().ToString()}.jpg";
         var data = new Regex(@"^data:image\/[a-z]+;base64,")
             .Replace(model.Base64Image, "");
         var bytes = Convert.FromBase64String(data);
-        var blobClient = new BlobClient(Configuration.AzureStorageConnectionString, container, fileName);
+        var blobClient = new BlobClient(Configuration.AzureStorageConnectionString, "user-images", fileName);
         try
         {
             using var stream = new MemoryStream(bytes);
@@ -135,6 +128,6 @@ public class AccountController : ControllerBase
             return StatusCode(500, new ResultViewModel<string>("05X04 - Falha interna"));
         }
 
-        return Ok(new ResultViewModel<string>("Imagem alterada com sucesso!", null));
+        return Ok(new ResultViewModel<string>($"Imagem alterada com sucesso! {User.Identity.Name}", null));
     }
 }
