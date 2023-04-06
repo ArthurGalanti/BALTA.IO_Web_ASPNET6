@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Ignore all Development.json
-*.Development.json
+appsettings.Development.json
