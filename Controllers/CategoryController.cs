@@ -22,7 +22,7 @@ public class CategoryController : ControllerBase
             var categories = cache.GetOrCreateAsync("CategoriesCache", entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                return context.Categories.ToListAsync();
+                return GetCategories(context);
             });
             return Ok(new ResultViewModel<List<Category>>(await categories));
         }
@@ -31,7 +31,11 @@ public class CategoryController : ControllerBase
             return StatusCode(500, new ResultViewModel<List<Category>>(" 05XE51 - Erro interno do servidor"));
         }
     }
-    
+    private static Task<List<Category>> GetCategories(BlogDataContext context)
+    {
+        return context.Categories.ToListAsync();
+    }
+
     [HttpGet ("v1/categories/{id:int}")]
     public async Task<IActionResult> GetByIdAsync(
         [FromRoute] int id,
@@ -93,7 +97,7 @@ public class CategoryController : ControllerBase
                 .Categories
                 .FirstOrDefaultAsync(x=>x.Id == id);
             if (category == null)
-                return NotFound(new ResultViewModel<Category>("Conteúdo não encontrado"));
+                return NotFound(new ResultViewModel<Category>("Categoria não encontrada"));
 
             category.Name = model.Name;
             category.Slug = model.Slug;
@@ -124,7 +128,7 @@ public class CategoryController : ControllerBase
                 .Categories
                 .FirstOrDefaultAsync(x=>x.Id == id);
             if (category == null)
-                return NotFound(new ResultViewModel<Category>("Conteúdo não encontrado"));
+                return NotFound(new ResultViewModel<Category>("Categoria não encontrada"));
 
             context.Categories.Remove(category);
             await context.SaveChangesAsync();

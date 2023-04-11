@@ -11,15 +11,15 @@ namespace BlogAPI.Data.Mappings
             // Nome tabela
             builder.ToTable("Category");
 
-            //Primary Key
+            // Primary Key
             builder.HasKey(x=>x.Id);
 
-            //Identity
+            // Identity
             builder.Property(x=>x.Id)
                 .ValueGeneratedOnAdd()
                 .UseIdentityColumn();
 
-            //Propriedades específicas
+            // Propriedades
             builder.Property(x=>x.Name)
                 .IsRequired()
                 .HasColumnName("Name")
@@ -32,10 +32,9 @@ namespace BlogAPI.Data.Mappings
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(80);
 
-            //índices
+            // Índices
             builder.HasIndex(x=>x.Slug, "IX_Category_Slug")
                 .IsUnique();
-
         }
     }
 }

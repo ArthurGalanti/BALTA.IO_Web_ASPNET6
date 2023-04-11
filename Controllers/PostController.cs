@@ -1,8 +1,6 @@
-﻿using System.Runtime.InteropServices;
-using BlogAPI.Data;
+﻿using BlogAPI.Data;
 using BlogAPI.Models;
 using BlogAPI.ViewModels;
-using BlogAPI.ViewModels.Categories;
 using BlogAPI.ViewModels.Posts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -111,7 +109,7 @@ public class PostController : ControllerBase
                 .ToListAsync();
 
             if (posts.Count == 0)
-                return NotFound(new ResultViewModel<Post>("Conteúdo não encontrado"));
+                return NotFound(new ResultViewModel<Post>("Categoria não encontrada"));
             
             return Ok(new ResultViewModel<dynamic>(new
             {

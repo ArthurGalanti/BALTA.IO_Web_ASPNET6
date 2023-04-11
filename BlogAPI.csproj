@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -19,13 +19,4 @@
     <PackageReference Include="SecureIdentity" Version="1.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot\images\7dd44ea3-05ef-4338-b96c-20e6dd7ac999.jpg" />
-  </ItemGroup>
-
 </Project>

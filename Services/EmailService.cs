@@ -31,9 +31,8 @@ public class EmailService
             smtpClient.Send(mail);
             return true;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.Write(ex.Message);
             return false;
         }
     }

@@ -10,15 +10,15 @@ namespace BlogAPI.Data.Mappings
         {
             builder.ToTable("User");
 
-            //Primary Key
+            // Primary Key
             builder.HasKey(x=>x.Id);
 
-            //Identity
+            // Identity
             builder.Property(x=>x.Id)
                 .ValueGeneratedOnAdd()
                 .UseIdentityColumn();
 
-            //Propriedades específicas
+            // Propriedades
             builder.Property(x=>x.Name)
                 .IsRequired()
                 .HasColumnName("Name")
@@ -37,20 +37,19 @@ namespace BlogAPI.Data.Mappings
             builder.Property(x=>x.Image)
                 .IsRequired(false);
             
-            builder.Property(x=>x.PasswordHash)
+            builder.Property(x=>x.PasswordHash).IsRequired()
                 .IsRequired(false)
                 .HasColumnName("PasswordHash")
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(255);
 
-            
             builder.Property(x=>x.Slug)
                 .IsRequired()
                 .HasColumnName("Slug")
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(80);
 
-            //Índices
+            // Índices
             builder.HasIndex(x=>x.Slug, "IX_User_Slug")
                 .IsUnique();
             
@@ -71,7 +70,6 @@ namespace BlogAPI.Data.Mappings
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_UserRole_UserId")
                         .OnDelete(DeleteBehavior.Cascade));
-
         }
     }
 }

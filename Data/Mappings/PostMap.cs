@@ -10,15 +10,15 @@ namespace BlogAPI.Data.Mappings
         {
             builder.ToTable("Post");
 
-            //Primary Key
+            // Primary Key
             builder.HasKey(x=>x.Id);
 
-            //Identity
+            // Identity
             builder.Property(x=>x.Id)
                 .ValueGeneratedOnAdd()
                 .UseIdentityColumn();
 
-            //Propriedades específicas
+            // Propriedades
             builder.Property(x=>x.LastUpdateDate)
                 .IsRequired()
                 .HasColumnName("LastUpdateDate")
@@ -27,11 +27,11 @@ namespace BlogAPI.Data.Mappings
                 .HasDefaultValueSql("GETDATE()");
                 // .HasDefaultValue(DateTime.Now.ToUniversalTime());
 
-            //Índices
+            // Índices
             builder.HasIndex(x=>x.Slug, "IX_Post_Slug")
                 .IsUnique();
 
-            //Relacionamentos 1:N
+            // Relacionamentos 1:N
             builder
                 .HasOne(x=>x.Author)
                 .WithMany(x=>x.Posts)
@@ -48,20 +48,19 @@ namespace BlogAPI.Data.Mappings
                 .HasMany(x => x.Tags)
                 .WithMany(x => x.Posts)
                 .UsingEntity<Dictionary<string, object>>(
-                    "PostTag",
- post => post // Inicia com Post
-     .HasOne<Tag>() // Post possui uma tag
-     .WithMany()
-     .HasForeignKey("PostId") // Define a chave estrangeira
-     .HasConstraintName("FK_PostRole_PostId") // Aqui está errado o nom da constraint, mas é só o nome
-     .OnDelete(DeleteBehavior.Cascade),
- tag => tag // Mapeaia a tag
-     .HasOne<Post>() // Que tem um post
-     .WithMany() // Que contém muitas tags
-     .HasForeignKey("TagId") // Chave estrangeira
-     .HasConstraintName("FK_PostTag_TagId")
-     .OnDelete(DeleteBehavior.Cascade));
-
+                    "PostTag", 
+                    post => post // Inicia com Post
+                        .HasOne<Tag>() // Post possui uma tag
+                        .WithMany()
+                        .HasForeignKey("PostId") // Define a chave estrangeira
+                        .HasConstraintName("FK_PostRole_PostId") // Aqui está errado o nom da constraint, mas é só o nome
+                        .OnDelete(DeleteBehavior.Cascade), 
+                    tag            => tag // Mapeaia a tag
+                        .HasOne<Post>() // Que tem um post
+                        .WithMany() // Que contém muitas tags
+                        .HasForeignKey("TagId") // Chave estrangeira
+                        .HasConstraintName("FK_PostTag_TagId")
+                        .OnDelete(DeleteBehavior.Cascade));
         }
     }
 }

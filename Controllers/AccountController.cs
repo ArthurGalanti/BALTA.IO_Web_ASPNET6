@@ -19,8 +19,9 @@ public class AccountController : ControllerBase
     [HttpPost("v1/accounts")]
     public async Task<IActionResult> Post(
         [FromBody] RegisterViewModel model,
-        [FromServices] EmailService emailService,
-        [FromServices] BlogDataContext context)
+        [FromServices] BlogDataContext context,
+        [FromServices] EmailService emailService
+        )
     {
         if (!ModelState.IsValid)
             return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
@@ -43,7 +44,7 @@ public class AccountController : ControllerBase
                 "Bem vindo ao blog!",
                 body: $"{user.Name}, sua senha é <strong>{model.Password}</strong>");
 
-            return Ok(new ResultViewModel<dynamic>($"E-mail {user.Email} cadastrado com sucesso!"));
+            return Ok(new ResultViewModel<dynamic>($"E-mail {user.Email} cadastrado com sucesso!",null));
         }
         catch (DbUpdateException)
         {
@@ -94,30 +95,24 @@ public class AccountController : ControllerBase
         [FromBody] UploadImageViewModel model,
         [FromServices] BlogDataContext context)
     {
-        var fileName = $"{Guid.NewGuid().ToString()}.jpg";
+        var email = User.Identity?.Name;
+        var fileName = $"{email}.jpg";
         var data = new Regex(@"^data:image\/[a-z]+;base64,")
             .Replace(model.Base64Image, "");
         var bytes = Convert.FromBase64String(data);
         var blobClient = new BlobClient(Configuration.AzureStorageConnectionString, "user-images", fileName);
+        var user = await context
+            .Users
+            .FirstOrDefaultAsync(x => x.Email == email);
+
+        if (user == null)
+            return NotFound(new ResultViewModel<User>("Usuário não encontrado"));
+        
         try
         {
             using var stream = new MemoryStream(bytes);
             await blobClient.UploadAsync(stream);
-        }
-        catch
-        {
-            return StatusCode(500, new ResultViewModel<string>("05X04 - Falha interna"));
-        }
-
-        var user = await context
-            .Users
-            .FirstOrDefaultAsync(x => x.Email == User.Identity.Name);
-
-        if (user == null)
-            return NotFound(new ResultViewModel<User>("Usuário não encontrado"));
-        user.Image = blobClient.Uri.AbsoluteUri;
-        try
-        {
+            user.Image = blobClient.Uri.AbsoluteUri;
             context.Users.Update(user);
             await context.SaveChangesAsync();
         }
@@ -125,7 +120,6 @@ public class AccountController : ControllerBase
         {
             return StatusCode(500, new ResultViewModel<string>("05X04 - Falha interna"));
         }
-
-        return Ok(new ResultViewModel<string>($"Imagem alterada com sucesso!", null));
+        return Ok(new ResultViewModel<string>($"Imagem alterada com sucesso! URL: {blobClient.Uri.AbsoluteUri}", null));
     }
 }
